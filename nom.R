@@ -8,8 +8,13 @@ pass <- Sys.getenv("AMAZON_PASS")
 sign_in_id <- "signInSubmit"
 cart_id <- "nav-cart-count"
 checkout_name <- "proceedToALMCheckout-VUZHIFdob2xlIEZvb2Rz"
-skip_beforeyoucheckout_name <- "proceedToCheckout"
-select_free_class <- "a-button-text ufss-slot-toggle-native-button"
+continue_class <- "a-button-input"
+continue_top_id <- "continue-top"
+# select_free_class <- "a-button-text ufss-slot-toggle-native-button"
+select_price_class <- "ufss-slot-price-container"
+place_order_class <- "a-button-text place-your-order-button"
+no_windows_text <- "No delivery windows available."
+success_text <- "Thank you, your Whole Foods Market order has been placed."
 
 sess <- browse.launch_session(url)
 
@@ -21,6 +26,7 @@ sess %>%
 
 Sys.sleep(2)
 
+# Input password
 sess %>% 
   browse.send_text("id", password_id, pass)
 
@@ -37,36 +43,70 @@ Sys.sleep(2)
 sess %>% 
   browse.click_element("name", checkout_name)
 
+# Skip the "before you checkout do you want to add stuff"
 sess %>% 
-  browse.click_element("name", skip_beforeyoucheckout_name)
+  browse.click_element("class", continue_class)
 
+# Skip the note about subsitutions
 sess %>% 
-  browse.click_element("class", "a-button-input")
-
+  browse.click_element("class", continue_class)
 
 hit_window <- function(n_tries = 100, timeout_after = 30*60, and = TRUE) {
   `%*%` <- if (and) `&&` else `||`
   
-  while (try_num < n_tries %*% elapsed_time < timeout_after) {
+  start_time <- lubridate::now()
+  try_num <- 1
+  elapsed_time <- (lubridate::now() - start_time) %>% round(0)
+  
+  while ((try_num < n_tries) %*% (elapsed_time < timeout_after)) {
+
+    dev.glue_message("On try {try_num} of {n_tries} and {elapsed_time} seconds of {timeout_after}.")
+    
     raw <- 
       sess %>% 
       browse.extract_html() 
     
-    available_windows <- 
+    no_available_windows <- 
       raw %>% 
       rvest::html_nodes("h4") %>% 
       rvest::html_text() %>% 
-      stringr::str_detect("No delivery windows available.") %>% 
-      any() %>% 
-      `!`
+      stringr::str_detect(no_windows_text) %>% 
+      any()
     
-    if (available_windows) {
+    if (!no_available_windows) {
       # Try and hit a free slot button
       sess %>% 
-        browse.click_element("class", select_free_class)
-    } else {
-      seleniumPipes::refresh()
-    }
+        browse.click_element("class", select_price_class)
+      
+      sess %>% 
+        browse.click_element("class", continue_class)
+      
+      sess %>% 
+        browse.click_element("id", continue_top_id)
+      
+      sess %>% 
+        browse.click_element("id", place_order_class)
+      
+      raw <- 
+        sess %>% 
+        browse.extract_html()
+      
+      success <- 
+        raw %>% 
+        rvest::html_nodes("h2") %>% 
+        rvest::html_text() %>% 
+        stringr::str_detect(success_text) %>% 
+        any()
+      
+      if (success) {
+        message("Yay!")
+        return()
+      } 
+    } 
+    seleniumPipes::refresh(sess)
+    try_num %<>% +1
+    elapsed_time <- (lubridate::now() - start_time) %>% round(0)
   }
 }
 
+hit_window()
