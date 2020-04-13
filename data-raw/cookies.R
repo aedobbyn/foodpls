@@ -1,4 +1,3 @@
-
 cookies_template <- 
   tibble::tibble(
     name = c(

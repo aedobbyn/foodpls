@@ -24,6 +24,8 @@ get_in <- function() {
   message("Launching session.")
   sess <<-
     start_session(url)
+  
+  Sys.sleep(10)
 
   sess %>%
     add_cookies(cookie_tbl = cookies)
@@ -64,7 +66,7 @@ check_out <- function(cart = "amazon fresh") {
       "amazon fresh" = checkout_name_af
     )
   
-  if (got_captchad(sess)) {
+  if (checkif_got_captchad(sess)) {
     message("Got captcha'd :( \n Wait a bit and try again.")
     return(invisible())
   }
@@ -117,7 +119,7 @@ buy <- function(n_tries = 100,
                 timeout_after = 30 * 60, 
                 end_earlier = TRUE, 
                 sleep_time = 1) {
-  if (!check_on_schedule_order_page(sess)) {
+  if (!checkif_on_schedule_order_page(sess)) {
     return(invisible())
   }
 
@@ -151,16 +153,19 @@ buy <- function(n_tries = 100,
       any()
 
     if (available_windows) {
-      # Try and hit a free slot button
+      message("Selecting the first available window.")
       sess %>%
         click("class", select_price_class)
 
+      message("Continuing.")
       sess %>%
         click("class", continue_class)
 
+      message("More continuing.")
       sess %>%
         click("id", continue_top_id)
 
+      message("Placing order.")
       sess %>%
         click("name", place_order_name)
 

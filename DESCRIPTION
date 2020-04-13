@@ -6,8 +6,7 @@ Authors@R:
            family = "Dobbyn",
            role = c("aut", "cre"),
            email = "amanda.e.dobbyn@gmail.com")
-Description: Bot to check out an Amazon cart or die
-    trying.
+Description: Bot to check out an Amazon cart or die trying.
 License: MIT + file LICENSE
 URL: http://github.com/foodpls
 BugReports: https://github.com/aedobbyn/foodpls/issues

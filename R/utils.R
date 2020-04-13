@@ -18,6 +18,7 @@ place_order_name <- "placeYourOrder1"
 # Text
 available_windows_text <- "Next available"
 need_to_auth_text <- "Sign-In"
+captcha_text <- "Enter the characters you see"
 success_text <- "Thank you, your Whole Foods Market order has been placed."
 
 glue_message <- glue::glue %>>>% message
@@ -74,18 +75,18 @@ extract_html <- function(sess) {
     xml2::read_html()
 }
 
-got_captchad <- function(sess) {
+checkif_got_captchad <- function(sess) {
   sess %>% 
     extract_html() %>% 
     rvest::html_nodes("h4") %>% 
     rvest::html_text() %>%
     clean_html() %>% 
-    stringr::str_detect("Enter the characters you see") %>%
+    stringr::str_detect(captcha_text) %>%
     any()
 }
 
 # Make sure we're on the page where we pick a delivery time before trying buy()
-check_on_schedule_order_page <- function(sess) {
+checkif_on_schedule_order_page <- function(sess) {
   on_correct_page <-
     sess %>%
     extract_html() %>%

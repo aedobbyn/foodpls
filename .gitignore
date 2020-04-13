@@ -2,5 +2,5 @@
 .Rhistory
 .RData
 .Ruserdata
-*cookies.csv
+data-raw/cookies.csv
 *.Rproj

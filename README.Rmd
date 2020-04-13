@@ -16,7 +16,7 @@ knitr::opts_chunk$set(
 <!-- badges: start -->
 <!-- badges: end -->
 
-This is a bot that can be used to check out an Amazon cart. Use at your own risk!
+This is a bot that can be used to check out an Amazon food cart. Particularly useful in the time of covid. This is probably not super condoned by Amazon, so use at your own risk :)
 
 ## Installation
 
@@ -45,7 +45,7 @@ Sys.setenv(EMAIL="ratatouille@gmail.com")
 There are three main functions in this package. 
 
 * `get_in`: logs you in
-* `checkout`: checks out your cart and navigates you to the page where you would select a delivery time if one is available
+* `check_out`: checks out your cart and navigates you to the page where you would select a delivery time if one is available
 * `buy`: selects the first available delivery time if it's available. If it's not, it keeps refreshing the page until a certain number of tries is reached or a time limit is reached, or both.
 
 `run` evaluates all of these in order.
