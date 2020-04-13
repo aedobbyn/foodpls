@@ -15,7 +15,7 @@ Imports:
     gestalt,
     glue,
     lubridate,
-    magrittr
+    magrittr,
     readr,
     rvest,
     seleniumPipes,

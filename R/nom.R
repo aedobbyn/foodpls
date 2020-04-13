@@ -11,8 +11,17 @@
 #' }
 get_in <- function() {
   # Read in cookies
-  cookies <- readr::read_csv("data-raw/cookies.csv")
+  cookies <- 
+    readr::read_csv(
+      "data-raw/cookies.csv",
+      col_types = 
+        readr::cols(
+          name = readr::col_character(),
+          value = readr::col_character()
+        )
+    )
 
+  message("Launching session.")
   sess <<-
     start_session(url)
 
@@ -54,6 +63,11 @@ check_out <- function(cart = "amazon fresh") {
       "whole foods" = checkout_name_wf,
       "amazon fresh" = checkout_name_af
     )
+  
+  if (got_captchad(sess)) {
+    message("Got captcha'd :( \n Wait a bit and try again.")
+    return(invisible())
+  }
 
   message("Clicking the cart button.")
   sess %>%

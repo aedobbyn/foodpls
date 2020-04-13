@@ -74,6 +74,16 @@ extract_html <- function(sess) {
     xml2::read_html()
 }
 
+got_captchad <- function(sess) {
+  sess %>% 
+    extract_html() %>% 
+    rvest::html_nodes("h4") %>% 
+    rvest::html_text() %>%
+    clean_html() %>% 
+    stringr::str_detect("Enter the characters you see") %>%
+    any()
+}
+
 # Make sure we're on the page where we pick a delivery time before trying buy()
 check_on_schedule_order_page <- function(sess) {
   on_correct_page <-
