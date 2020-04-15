@@ -25,7 +25,7 @@ get_in <- function() {
   sess <<-
     start_session(url)
   
-  Sys.sleep(10)
+  Sys.sleep(1)
 
   sess %>%
     add_cookies(cookie_tbl = cookies)
@@ -83,17 +83,12 @@ check_out <- function(cart = "amazon fresh") {
 
   Sys.sleep(2)
 
-  message("Continuing on the did-you-forget page.")
-  sess %>%
-    click("name", proceed_to_checkout_name)
-
-  Sys.sleep(1)
-
-  message("Continuing on the substitutions page.")
-  sess %>%
-    click("class", continue_class)
-
-  Sys.sleep(1)
+  continue_sequence()
+  
+  if (!checkif_on_schedule_order_page(sess)) {
+    message("Trying continue sequence again.")
+    continue_sequence()
+  }
 
   sess
 }

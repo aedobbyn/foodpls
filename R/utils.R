@@ -99,3 +99,17 @@ checkif_on_schedule_order_page <- function(sess) {
 
   on_correct_page
 }
+
+continue_sequence <- function(sess) {
+  message("Continuing on the did-you-forget page.")
+  sess %>%
+    click("name", proceed_to_checkout_name)
+  
+  Sys.sleep(1)
+  
+  message("Continuing on the substitutions page.")
+  sess %>%
+    click("class", continue_class)
+  
+  Sys.sleep(1)
+} 
