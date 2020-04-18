@@ -112,4 +112,6 @@ continue_sequence <- function(sess) {
     click("class", continue_class)
   
   Sys.sleep(1)
+  
+  sess
 } 

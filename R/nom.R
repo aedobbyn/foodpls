@@ -79,11 +79,11 @@ check_out <- function(cart = "amazon fresh") {
 
   glue_message("Selecting {stringr::str_to_title(cart)} checkout.")
   sess %>%
-    click("name", checkout_name_af)
+    click("name", checkout_button)
 
   Sys.sleep(2)
 
-  continue_sequence()
+  continue_sequence(sess)
   
   if (!checkif_on_schedule_order_page(sess)) {
     message("Trying continue sequence again.")
