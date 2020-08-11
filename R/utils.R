@@ -16,15 +16,72 @@ select_price_class <- "ufss-slot-price-container"
 place_order_name <- "placeYourOrder1"
 
 # Text
-available_windows_text <- "Next available"
+available_windows_text <- "Next available|2-hour delivery windows"
 need_to_auth_text <- "Sign-In"
 captcha_text <- "Enter the characters you see"
-success_text <- "Thank you, your Whole Foods Market order has been placed."
+success_text <- "Thank you, your [a-zA-z ]+ order has been placed."
 
 glue_message <- glue::glue %>>>% message
 
-start_session <- function(url, browser = "chrome", port = 4444L) {
-  seleniumPipes::remoteDr(browserName = "chrome", port = port) %>%
+#' Get the version of Chromedriver that matches your installed version of the Chrome application
+#' 
+#' Currently only supports MacOS.
+#'
+#' @return A character vector
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' get_chromedriver_version()
+#' }
+get_chromedriver_version <- function() {
+  stopifnot(Sys.info()["sysname"] == "Darwin")
+  
+  chromedriver_versions <- binman::list_versions(appname = "chromedriver") %>% 
+    .[[1]]
+  
+  chrome_cmd <- "/Applications/Google\\ Chrome.app/Contents/MacOS/Google\\ Chrome --version"
+  
+  chrome_version <- system(chrome_cmd, intern = TRUE) %>% 
+    stringr::str_extract("[0-9\\.]+") %>% 
+    stringr::str_sub(1L, 9L)
+  
+  chromedriver_versions[
+    which(
+      stringr::str_detect(chromedriver_versions, chrome_version)
+    )
+  ] %>% 
+    .[1]
+}
+
+end_session <- function() {
+  if (!exists("server")) {
+    return(invisible())
+  }
+  
+  server$stop()
+  
+  rm(server)
+}
+
+start_session <- function(url, 
+                          browser = "chrome", 
+                          port = 4567L, 
+                          chromedriver_version = get_chromedriver_version()) {
+  end_session()
+  
+  server <<- 
+    wdman::chrome(
+      port = as.integer(port),
+      version = chromedriver_version,
+      check = FALSE
+    )
+  
+  seleniumPipes::remoteDr(
+    browserName = "chrome", 
+    port = port, 
+    version = chromedriver_version
+  ) %>%
     seleniumPipes::go(url)
 }
 

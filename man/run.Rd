@@ -4,10 +4,16 @@
 \alias{run}
 \title{Do the thing}
 \usage{
-run(cart = "amazon fresh", ...)
+run(
+  cart = "amazon fresh",
+  chromedriver_version = get_chromedriver_version(),
+  ...
+)
 }
 \arguments{
 \item{cart}{One of \code{"whole foods"} or \code{"amazon fresh"}.}
+
+\item{chromedriver_version}{String supplying the version of chromedriver to use. Currently \code{get_chromedriver_version}}
 
 \item{...}{Further args to \code{\link{buy}}.}
 }

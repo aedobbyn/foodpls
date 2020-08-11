@@ -146,7 +146,7 @@ buy <- function(n_tries = 100,
       rvest::html_text() %>%
       stringr::str_detect(available_windows_text) %>%
       any()
-
+    
     if (available_windows) {
       message("Selecting the first available window.")
       sess %>%
@@ -192,6 +192,7 @@ buy <- function(n_tries = 100,
 #' Do the thing
 #'
 #' @param cart One of \code{"whole foods"} or \code{"amazon fresh"}.
+#' @param chromedriver_version String supplying the version of chromedriver to use. Currently \code{get_chromedriver_version}
 #' @param ... Further args to \code{\link{buy}}.
 #'
 #' @return
@@ -201,7 +202,9 @@ buy <- function(n_tries = 100,
 #' \dontrun{
 #' run
 #' }
-run <- function(cart = "amazon fresh", ...) {
+run <- function(cart = "amazon fresh", 
+                chromedriver_version = get_chromedriver_version(), 
+                ...) {
   get_in()
   check_out(cart = cart)
   buy(...)

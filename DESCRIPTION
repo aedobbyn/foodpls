@@ -11,6 +11,7 @@ License: MIT + file LICENSE
 URL: http://github.com/foodpls
 BugReports: https://github.com/aedobbyn/foodpls/issues
 Imports:
+    binman,
     gestalt,
     glue,
     lubridate,
