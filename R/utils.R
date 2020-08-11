@@ -111,6 +111,7 @@ auth <- function(sess) {
 input_text <- function(sess, id_type, unique_id, text) {
   element <- seleniumPipes::findElement(sess, id_type, unique_id)
   seleniumPipes::elementClear(element)
+  Sys.sleep(0.5)
   seleniumPipes::elementSendKeys(element, text)
 }
 
